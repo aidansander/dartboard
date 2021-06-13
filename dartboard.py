@@ -1,4 +1,3 @@
-#filename dartboard.py
 import tkinter as tk
 import cwiid as cw
 import time
@@ -7,6 +6,9 @@ import tkinter.font as tkFont
 from enum import IntEnum
 
 from dart import Dart
+
+from game import Player
+from game import Game
 
 
 class Button:
@@ -120,7 +122,7 @@ class Board:
         return 20*[circle]
 
 
-    def create_board(self, root, width=1600, height=800, border=70, highlightcolor='gold'):
+    def create_board(self, root, width=900, height=800, border=70, highlightcolor='gold'):
        #TODO get some anti-aliasing in here 
         self.canvas = tk.Canvas(root, bg='white', width=width, height=height)
         diameter = height - border
@@ -136,7 +138,7 @@ class Board:
         self.arcs.append(self.create_circle(center, .07*diameter, 'green', highlightcolor)) # bull
         self.arcs.append(self.create_circle(center, .03*diameter, 'red', highlightcolor)) # double-bull
         self.create_text(center, 1.05*diameter)
-        self.canvas.pack() #reality is often dissapointing
+        self.canvas.pack(side=tk.LEFT) #reality is often dissapointing
 
         assert len(self.arcs) - 1 == Arcy.DOUBLE_BULL
 
@@ -165,7 +167,12 @@ root = tk.Tk()
 board = Board()
 board.create_board(root)
 
+num_players = 2
+players = [Player('Player' + str(i+1)) for i in range(num_players)]
 
+frame = tk.Frame(root)
+frame.pack(side=tk.LEFT)
+game = Game(players, frame) 
 
 board.update()
 root.update() 
@@ -182,6 +189,7 @@ right_button = Button(cw.BTN_RIGHT, button_delay, hold_delay)
 up_button = Button(cw.BTN_UP, button_delay, hold_delay)
 down_button = Button(cw.BTN_DOWN, button_delay, hold_delay)
 select_button = Button(cw.BTN_A, button_delay, hold_delay)
+back_button = Button(cw.BTN_B, button_delay, hold_delay)
 
 
 
@@ -202,7 +210,12 @@ while True:
         elif down_button.button_held(buttons, old_buttons, nowtime):
             board.move_down()
         if select_button.button_clicked(buttons, old_buttons, nowtime)[0]:
-            pass
+            game.record_dart(board.get_selected())
+            game.update()
+        if back_button.button_clicked(buttons, old_buttons, nowtime)[0]:
+            game.undo_dart()
+            game.update()
+
         board.update()
     root.update() 
     old_buttons = buttons
