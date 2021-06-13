@@ -6,6 +6,8 @@ import math
 import tkinter.font as tkFont
 from enum import IntEnum
 
+from dart import Dart
+
 
 class Button:
     
@@ -17,7 +19,7 @@ class Button:
         self.holddelay = holddelay
         assert self.holddelay <= self.buttondelay
         
-    def button_click(self,buttons, lastbuttons, nowtime):    
+    def button_clicked(self,buttons, lastbuttons, nowtime):    
         if (buttons & self.buttonmask) and not (lastbuttons & self.buttonmask):
             self.lastclickedtime = nowtime
             return (True, 0)
@@ -26,7 +28,7 @@ class Button:
         return (False, 0)
 
     def button_held (self, buttons, lastbuttons, nowtime):
-        (clicked , heldtime) = self.button_click(buttons, lastbuttons, nowtime)
+        (clicked , heldtime) = self.button_clicked(buttons, lastbuttons, nowtime)
         if clicked or (nowtime - self.lastheldtime >= self.holddelay and  heldtime >= self.buttondelay):
             self.lastheldtime = nowtime
             return True
@@ -157,7 +159,7 @@ class Board:
             multiplier = 2
             number = 25
 
-        return (multiplier, number)
+        return Dart(multiplier, number)
 
 root = tk.Tk()
 board = Board()
@@ -179,6 +181,9 @@ left_button = Button(cw.BTN_LEFT, button_delay, hold_delay)
 right_button = Button(cw.BTN_RIGHT, button_delay, hold_delay)
 up_button = Button(cw.BTN_UP, button_delay, hold_delay)
 down_button = Button(cw.BTN_DOWN, button_delay, hold_delay)
+select_button = Button(cw.BTN_A, button_delay, hold_delay)
+
+
 
 old_buttons = 0
 wii.led = 1
@@ -196,6 +201,8 @@ while True:
             board.move_up()
         elif down_button.button_held(buttons, old_buttons, nowtime):
             board.move_down()
+        if select_button.button_clicked(buttons, old_buttons, nowtime)[0]:
+            pass
         board.update()
     root.update() 
     old_buttons = buttons
