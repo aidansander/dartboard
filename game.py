@@ -13,11 +13,13 @@ class Player:
     def undo_dart (self):
         self.hist.pop()
 
+
 class Game:
     
     def __init__(self, playerlist, frame):
         self.players = playerlist
-        self.scorecounter = 0
+        
+        self.dartcounter = 0
         self.playerlabels =[]
         self.frame = frame
         self.playercount = len(self.players)
@@ -30,22 +32,52 @@ class Game:
             i.pack(side=tk.TOP)
 
     def record_dart(self, dart):
-        self.players[(self.scorecounter//3)%len(self.players)].record_dart(dart)
-        self.scorecounter += 1
+        self.players[(self.dartcounter//3)%len(self.players)].record_dart(dart)
+        self.dartcounter += 1
 
     def undo_dart (self):
-        if self.scorecounter>0:
-            self.scorecounter -= 1
-            self.players[(self.scorecounter//3)%len(self.players)].undo_dart()
+        if self.dartcounter>0:
+            self.dartcounter -= 1
+            self.players[(self.dartcounter//3)%len(self.players)].undo_dart()
     
     def score_player(self, player):
         score = 0
         for i in player.hist:
             score += i.multiplier * i.number
         return score
-
+    
     
     def update(self):
-        for i in range (0,self.playercount) :
+        for i in range (0,self.playercount):
             self.playerlabels[i]['text'] = self.score_player(self.players[i])
         self.frame.update()
+
+class CountDownPlayer (Player):
+
+    def __init__(self, name, count_down, double_in, double_out):
+        
+        self.count_down = count_down
+        self.double_in = double_in
+        self.double_out = double_out
+        self.is_in = False
+        super().__init__(name)
+
+    def record_dart(self, dart):
+        super().record_dart(dart)
+
+
+
+class CountDownGame (Game):
+    def __init__(self, playernames, frame, count_down, double_in, double_out):
+        self.count_down = count_down
+        self.double_in = double_in
+        self.double_out = double_out
+        
+        playerlist = [CountDownPlayer(i, count_down, double_in, double_out) for i in playernames]
+
+        super().__init__(playerlist, frame)
+
+    def score_player(self, player):
+        score = self.count_down
+        
+
