@@ -47,10 +47,10 @@ def test_CountDownPlayer_double_in():
     p.record_dart(Dart(1, 20))
     p.record_dart(Dart(2, 20))
     p.record_dart(Dart(2, 20))
-    assert p.score == 301-80
+    assert p.roundscore == 301-80
     
     p = CountDownPlayer("Player1", 301, True, False)
     p.record_dart(Dart(1, 20))
     p.record_dart(Dart(1, 20))
     p.record_dart(Dart(3, 20))
-    assert p.score == 301
+    assert p.roundscore == 301

@@ -84,8 +84,8 @@ class CountDownPlayer (Player):
         #print ("countdownPlayer reset")
         self.is_in = not self.double_in
         self.is_out = not self.double_out
-        self.score = self.count_down
-        self.tempscore = self.count_down 
+        self.roundscore = self.count_down
+        self.score = self.count_down 
 
         
     def score_dart(self, dartindex):
@@ -95,20 +95,20 @@ class CountDownPlayer (Player):
             self.is_in = True
             
         if self.is_in:
-            self.tempscore -= dart.multiplier * dart.number
+            self.score -= dart.multiplier * dart.number
         if dartindex % 3 == 2:
-            if self.tempscore > 0:
-                self.score = self.tempscore
-            elif self.tempscore < 0:
-                self.tempscore = self.score
-        if self.tempscore == 0:
+            if self.score > 0:
+                self.roundscore = self.score
+            elif self.score < 0:
+                self.score = self.roundscore
+        if self.score == 0:
             if self.is_out:
-                self.score = self.tempscore
+                self.roundscore = self.score
 
             elif dartindex % 3 ==0 and dart.multiplier == 2:
-                self.score = self.tempscore
+                self.roundscore = self.score
             else:#TODO double check if double out requires double dart to win, i.e. does double 1, single 1, single 1, turn win on 4 points left, or does only double 2 win?
-                self.tempscore = self.score
+                self.score = self.roundscore
         
     
 
