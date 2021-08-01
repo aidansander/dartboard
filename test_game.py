@@ -1,4 +1,5 @@
 from game import Player, Game
+from game import CountDownPlayer
 from dart import Dart
 
 def setup_test_game_2p():
@@ -40,4 +41,16 @@ def test_game_undo_dart():
     assert g.players[0].hist[1] == Dart(1,6) 
     assert g.players[0].hist[2] == Dart(2,17) 
     assert g.players[1].hist == []
-
+    
+def test_CountDownPlayer_double_in():
+    p = CountDownPlayer("Player1", 301, True, False)
+    p.record_dart(Dart(1, 20))
+    p.record_dart(Dart(2, 20))
+    p.record_dart(Dart(2, 20))
+    assert p.score == 301-80
+    
+    p = CountDownPlayer("Player1", 301, True, False)
+    p.record_dart(Dart(1, 20))
+    p.record_dart(Dart(1, 20))
+    p.record_dart(Dart(3, 20))
+    assert p.score == 301

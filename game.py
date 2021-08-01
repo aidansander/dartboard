@@ -6,12 +6,25 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.hist = []
+        self.reset()
+
+    def reset(self):
+        #print ("player base reset")
+        self.score = 0
 
     def record_dart (self, dart):
         self.hist.append(dart)
+        self.score_dart(len(self.hist)-1)
     
     def undo_dart (self):
         self.hist.pop()
+        self.reset()
+        for i in range (0, len(self.hist)):
+            self.score_dart(i)
+
+    def score_dart(self, dartindex):
+        dart = self.hist[dartindex]
+        self.score += dart.multiplier * dart.number
 
 
 class Game:
@@ -47,9 +60,7 @@ class Game:
             self.players[(self.dartcounter//3)%len(self.players)].undo_dart()
     
     def score_player(self, player):
-        score = 0
-        for i in player.hist:
-            score += i.multiplier * i.number
+        score = player.score
         return score
      
     def update(self):
@@ -65,23 +76,21 @@ class CountDownPlayer (Player):
         self.count_down = count_down
         self.double_in = double_in
         self.double_out = double_out
-        self.reset()
-        self.is_in = not double_in
-        self.is_out = not double_out
-        self.score = count_down
-        self.tempscore = count_down
         super().__init__(name)
+        
+        #self.reset()
     
     def reset(self):
+        #print ("countdownPlayer reset")
         self.is_in = not self.double_in
         self.is_out = not self.double_out
-    
-    def record_dart(self, dart):
-        super().record_dart(dart)
-        score_dart(len(self.hist-1))
+        self.score = self.count_down
+        self.tempscore = self.count_down 
+
         
-    def score_dart(dartindex):
+    def score_dart(self, dartindex):
         dart = self.hist[dartindex]
+        #print ('countdownscore called')
         if dart.multiplier == 2:
             self.is_in = True
             
@@ -100,6 +109,8 @@ class CountDownPlayer (Player):
                 self.score = self.tempscore
             else:#TODO double check if double out requires double dart to win, i.e. does double 1, single 1, single 1, turn win on 4 points left, or does only double 2 win?
                 self.tempscore = self.score
+        
+    
 
 
 
