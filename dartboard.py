@@ -9,6 +9,7 @@ from dart import Dart
 
 from game import Player
 from game import Game
+from game import CountDownPlayer
 
 
 class Button:
@@ -168,7 +169,7 @@ board = Board()
 board.create_board(root)
 
 num_players = 2
-players = [Player('Player' + str(i+1)) for i in range(num_players)]
+players = [CountDownPlayer('Player' + str(i+1), 301) for i in range(num_players)]
 
 frame = tk.Frame(root)
 frame.pack(side=tk.LEFT)

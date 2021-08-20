@@ -71,7 +71,7 @@ class Game:
 
 class CountDownPlayer (Player):
 
-    def __init__(self, name, count_down, double_in, double_out):
+    def __init__(self, name, count_down, double_in=False, double_out=False):
         
         self.count_down = count_down
         self.double_in = double_in
