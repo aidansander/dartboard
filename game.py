@@ -127,6 +127,6 @@ class CountDownPlayer (Player):
 #        super().__init__(playerlist, frame)
 #
 #    def score_player(self, player):
-#        score = self.count_down
+#        score = self.count_down
 #        
 
